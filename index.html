@@ -423,7 +423,7 @@
 
   <footer>
     طراحی شده توسط: <a href="https://x.com/pushideh" target="_blank" rel="noopener">پوشیده</a>
-    <div class="version">نسخه‌ی برنامه: ۱.۴</div>
+    <div class="version">نسخه‌ی برنامه: ۱.۵</div>
   </footer>
 </div>
 
@@ -439,8 +439,8 @@ const ENDING_CONFIG = {
   none:            { position: 'suffix', build: (a,b) => '' },
   paren:           { position: 'suffix', build: (a,b) => '(' + toPersianDigits(a) + '/' + toPersianDigits(b) + ')' },
   slash:           { position: 'suffix', build: (a,b) => '/' + toPersianDigits(b) },
-  emoji1:          { position: 'suffix', build: (a,b) => '👇' },
-  emoji2:          { position: 'suffix', build: (a,b) => '⬇️' },
+  emoji1:          { position: 'suffix', build: (a,b) => (b === a) ? '' : '👇' },
+  emoji2:          { position: 'suffix', build: (a,b) => (b === a) ? '' : '⬇️' },
   paren_prefix:    { position: 'prefix', build: (a,b) => '(' + toPersianDigits(a) + '/' + toPersianDigits(b) + ')' },
   slash_b_prefix:  { position: 'prefix', build: (a,b) => toPersianDigits(b) + '/' },
 };
@@ -459,6 +459,16 @@ function getEndingLength(type, a, b){ return countChars(buildEnding(type,a,b)); 
 function getEndingBudget(type, a, b){
   const len = getEndingLength(type, a, b);
   return len > 0 ? len + 1 : 0;
+}
+// Used only while auto-splitting hasn't finalized the real segment numbers yet. For the emoji
+// types the LAST segment never gets an ending, so the conservative (worst-case) budget must be
+// based on a non-last segment whenever more than one segment is expected.
+function getConvergenceBudget(type, guessTotal){
+  if (type === 'emoji1' || type === 'emoji2') {
+    const refB = guessTotal > 1 ? 1 : guessTotal;
+    return getEndingBudget(type, guessTotal, refB);
+  }
+  return getEndingBudget(type, guessTotal, guessTotal);
 }
 function combineSegment(segText, ending, type){
   if (!ending) return segText;
@@ -515,7 +525,7 @@ function computeSegments(text, limit, endingType) {
   let guessTotal = 1;
   let segments = [];
   for (let iter = 0; iter < 10; iter++) {
-    const e = getEndingBudget(endingType, guessTotal, guessTotal);
+    const e = getConvergenceBudget(endingType, guessTotal);
     const effLimit = limit - e;
     if (effLimit <= 0) {
       return { error: 'محدودیت کاراکتر برای این نوع پایان‌بندی کافی نیست. عدد بزرگ‌تری وارد کنید.', segments: [] };
@@ -731,3 +741,4 @@ function renderManual(){
 </script>
 </body>
 </html>
+
