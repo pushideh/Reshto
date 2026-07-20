@@ -402,6 +402,7 @@
           <option value="slash">/۱ پایانی</option>
           <option value="paren_prefix">(۲/۱) آغازی</option>
           <option value="paren">(۲/۱) پایانی</option>
+          <option value="arrow_down">↓ پایانی</option>
           <option value="emoji1">👇 پایانی</option>
           <option value="emoji2">⬇️ پایانی</option>
         </select>
@@ -426,7 +427,7 @@
 
   <footer>
     طراحی شده توسط: <a href="https://x.com/pushideh" target="_blank" rel="noopener">پوشیده</a>
-    <div class="version">نسخه‌ی برنامه: ۱.۶</div>
+    <div class="version">نسخه‌ی برنامه: ۱.۷</div>
   </footer>
 </div>
 
@@ -448,6 +449,10 @@ const ENDING_CONFIG = {
   },
   emoji2:          {
     build: (a,b) => { if (b < a) return '⬇️'; if (a === 2) return '⬆️'; return ''; },
+    pos:   (a,b) => (b === a && a === 2) ? 'prefix' : 'suffix',
+  },
+  arrow_down:      {
+    build: (a,b) => { if (b < a) return '↓'; if (a === 2) return '↑'; return ''; },
     pos:   (a,b) => (b === a && a === 2) ? 'prefix' : 'suffix',
   },
   paren_prefix:    { build: (a,b) => '(' + toPersianDigits(a) + '/' + toPersianDigits(b) + ')', pos: (a,b) => 'prefix' },
@@ -474,7 +479,7 @@ function getEndingBudget(type, a, b){
 // "up" emoji is the same length as the regular "down" emoji), so the conservative (worst-case)
 // budget is based on a non-last segment whenever more than one segment is expected.
 function getConvergenceBudget(type, guessTotal){
-  if (type === 'emoji1' || type === 'emoji2') {
+  if (type === 'emoji1' || type === 'emoji2' || type === 'arrow_down') {
     const refB = guessTotal > 1 ? 1 : guessTotal;
     return getEndingBudget(type, guessTotal, refB);
   }
@@ -489,8 +494,8 @@ function getConvergenceBudget(type, guessTotal){
 // conservatively, as if it will end up needing an ending.
 function getPreviewEndingBudget(type, totalSegs, segNumber, isTrailingOpen){
   if (!isTrailingOpen) return getEndingBudget(type, totalSegs, segNumber);
-  if (type === 'emoji1' || type === 'emoji2') {
-    return getEndingBudget(type, Math.max(totalSegs, 2), 1); // force the "not last" emoji variant
+  if (type === 'emoji1' || type === 'emoji2' || type === 'arrow_down') {
+    return getEndingBudget(type, Math.max(totalSegs, 2), 1); // force the "not last" variant
   }
   if (type === 'none') return 0;
   return getEndingBudget(type, totalSegs + 2, segNumber); // extra digit-width buffer, worst case
