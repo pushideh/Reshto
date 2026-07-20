@@ -295,9 +295,8 @@
     border-radius: 4px;
   }
   .word.over{
-    background: #FBEAE7;
-    text-decoration: underline wavy var(--danger);
-    text-underline-offset: 3px;
+    background: #F3D9D5;
+    border-radius: 0;
   }
   .gap{
     display:inline;
@@ -340,6 +339,10 @@
     font-size:10px;
     color: var(--danger);
     opacity: 0.85;
+  }
+  .gap.over{
+    background: #F3D9D5;
+    border-radius: 0;
   }
 
   /* ---------- Footer ---------- */
@@ -423,7 +426,7 @@
 
   <footer>
     طراحی شده توسط: <a href="https://x.com/pushideh" target="_blank" rel="noopener">پوشیده</a>
-    <div class="version">نسخه‌ی برنامه: ۱.۵</div>
+    <div class="version">نسخه‌ی برنامه: ۱.۱</div>
   </footer>
 </div>
 
@@ -436,22 +439,28 @@ function toPersianDigits(input) {
 function countChars(str){ return Array.from(str).length; }
 
 const ENDING_CONFIG = {
-  none:            { position: 'suffix', build: (a,b) => '' },
-  paren:           { position: 'suffix', build: (a,b) => '(' + toPersianDigits(a) + '/' + toPersianDigits(b) + ')' },
-  slash:           { position: 'suffix', build: (a,b) => '/' + toPersianDigits(b) },
-  emoji1:          { position: 'suffix', build: (a,b) => (b === a) ? '' : '👇' },
-  emoji2:          { position: 'suffix', build: (a,b) => (b === a) ? '' : '⬇️' },
-  paren_prefix:    { position: 'prefix', build: (a,b) => '(' + toPersianDigits(a) + '/' + toPersianDigits(b) + ')' },
-  slash_b_prefix:  { position: 'prefix', build: (a,b) => toPersianDigits(b) + '/' },
+  none:            { build: (a,b) => '', pos: (a,b) => 'suffix' },
+  paren:           { build: (a,b) => '(' + toPersianDigits(a) + '/' + toPersianDigits(b) + ')', pos: (a,b) => 'suffix' },
+  slash:           { build: (a,b) => '/' + toPersianDigits(b), pos: (a,b) => 'suffix' },
+  emoji1:          {
+    build: (a,b) => { if (b < a) return '👇'; if (a === 2) return '👆'; return ''; },
+    pos:   (a,b) => (b === a && a === 2) ? 'prefix' : 'suffix',
+  },
+  emoji2:          {
+    build: (a,b) => { if (b < a) return '⬇️'; if (a === 2) return '⬆️'; return ''; },
+    pos:   (a,b) => (b === a && a === 2) ? 'prefix' : 'suffix',
+  },
+  paren_prefix:    { build: (a,b) => '(' + toPersianDigits(a) + '/' + toPersianDigits(b) + ')', pos: (a,b) => 'prefix' },
+  slash_b_prefix:  { build: (a,b) => toPersianDigits(b) + '/', pos: (a,b) => 'prefix' },
 };
 
 function buildEnding(type, a, b) {
   const cfg = ENDING_CONFIG[type];
   return cfg ? cfg.build(a, b) : '';
 }
-function getEndingPosition(type){
+function getEndingPosition(type, a, b){
   const cfg = ENDING_CONFIG[type];
-  return cfg ? cfg.position : 'suffix';
+  return cfg ? cfg.pos(a, b) : 'suffix';
 }
 function getEndingLength(type, a, b){ return countChars(buildEnding(type,a,b)); }
 // Budget reserved from the limit: the ending itself PLUS the joining space (since ending is
@@ -461,8 +470,9 @@ function getEndingBudget(type, a, b){
   return len > 0 ? len + 1 : 0;
 }
 // Used only while auto-splitting hasn't finalized the real segment numbers yet. For the emoji
-// types the LAST segment never gets an ending, so the conservative (worst-case) budget must be
-// based on a non-last segment whenever more than one segment is expected.
+// types the LAST segment normally gets no ending (except the special two-segment case, whose
+// "up" emoji is the same length as the regular "down" emoji), so the conservative (worst-case)
+// budget is based on a non-last segment whenever more than one segment is expected.
 function getConvergenceBudget(type, guessTotal){
   if (type === 'emoji1' || type === 'emoji2') {
     const refB = guessTotal > 1 ? 1 : guessTotal;
@@ -470,9 +480,24 @@ function getConvergenceBudget(type, guessTotal){
   }
   return getEndingBudget(type, guessTotal, guessTotal);
 }
-function combineSegment(segText, ending, type){
+// In manual mode, every segment except the still-open trailing one already has a cut placed
+// right after it, so its ending is fixed and known for sure. The trailing/open segment (from the
+// last cut to the end of the text) is ambiguous: the user might add another cut after it later,
+// which would turn it from "last" (often no ending) into "not last" (needs an ending). Previewing
+// it with e=0 would under-reserve space and let the user cut right at the limit, only to have the
+// ending push it over once the cut is actually placed. So the open segment is always previewed
+// conservatively, as if it will end up needing an ending.
+function getPreviewEndingBudget(type, totalSegs, segNumber, isTrailingOpen){
+  if (!isTrailingOpen) return getEndingBudget(type, totalSegs, segNumber);
+  if (type === 'emoji1' || type === 'emoji2') {
+    return getEndingBudget(type, Math.max(totalSegs, 2), 1); // force the "not last" emoji variant
+  }
+  if (type === 'none') return 0;
+  return getEndingBudget(type, totalSegs + 2, segNumber); // extra digit-width buffer, worst case
+}
+function combineSegment(segText, ending, type, a, b){
   if (!ending) return segText;
-  return getEndingPosition(type) === 'prefix' ? (ending + ' ' + segText) : (segText + ' ' + ending);
+  return getEndingPosition(type, a, b) === 'prefix' ? (ending + ' ' + segText) : (segText + ' ' + ending);
 }
 
 function tokenizeWords(text) {
@@ -537,7 +562,7 @@ function computeSegments(text, limit, endingType) {
   const total = segments.length;
   const finalSegments = segments.map((seg, idx) => {
     const ending = buildEnding(endingType, total, idx + 1);
-    const full = combineSegment(seg, ending, endingType);
+    const full = combineSegment(seg, ending, endingType, total, idx + 1);
     return { text: seg, ending, full, length: countChars(full) };
   });
   return { error: null, segments: finalSegments, total };
@@ -673,7 +698,20 @@ function renderManual(){
   segStarts.forEach((start, segIdx) => {
     const end = segEnds[segIdx];
     const segNumber = segIdx + 1;
-    const e = limit ? getEndingBudget(endingType, totalSegs, segNumber) : 0;
+    const isTrailingOpen = (segIdx === segStarts.length - 1);
+    let e = 0;
+    if (limit) {
+      if (isTrailingOpen) {
+        // Only reserve room for a possible future ending if this open segment's raw text (with
+        // no ending at all) already exceeds the limit — i.e. a split is actually necessary. If
+        // it already fits as-is, there's no reason to assume it will ever need an ending.
+        let rawLen = countChars(words[start]);
+        for (let i = start + 1; i < end; i++) rawLen += countChars(seps[i-1]) + countChars(words[i]);
+        e = (rawLen > limit) ? getPreviewEndingBudget(endingType, totalSegs, segNumber, true) : 0;
+      } else {
+        e = getEndingBudget(endingType, totalSegs, segNumber);
+      }
+    }
     const effLimit = limit - e;
     let current = '';
     let marked = false;
@@ -699,7 +737,11 @@ function renderManual(){
     if (i < words.length - 1){
       const gap = document.createElement('span');
       const isCut = manualCuts.has(i);
-      gap.className = 'gap' + (isCut ? ' cut' : '') + (boundaryAt.has(i+1) && !isCut ? ' boundary' : '');
+      const isOverGap = overWords.has(i) || overWords.has(i+1);
+      gap.className = 'gap'
+        + (isCut ? ' cut' : '')
+        + (boundaryAt.has(i+1) && !isCut ? ' boundary' : '')
+        + (isOverGap && !isCut ? ' over' : '');
       gap.textContent = seps[i];
       gap.addEventListener('click', () => {
         if (manualCuts.has(i)) manualCuts.delete(i); else manualCuts.add(i);
@@ -717,7 +759,7 @@ function renderManual(){
       segText += seps[i-1] + words[i];
     }
     const ending = limit ? buildEnding(endingType, totalSegs, idx+1) : '';
-    const full = combineSegment(segText, ending, endingType);
+    const full = combineSegment(segText, ending, endingType, totalSegs, idx+1);
     return { text: segText, full, length: countChars(full) };
   });
 
@@ -741,4 +783,3 @@ function renderManual(){
 </script>
 </body>
 </html>
-
