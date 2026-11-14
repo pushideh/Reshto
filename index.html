@@ -9,368 +9,183 @@
 <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --cream: #F4EEDD;
-    --cream-soft: #FBF8EF;
-    --cream-line: #DCCFA0;
-    --teal-deep: #0C5952;
-    --teal: #1B7F73;
-    --teal-bright: #35A99A;
-    --teal-pale: #E1EFEA;
-    --ink: #1B2B27;
-    --ink-soft: #57685F;
-    --danger: #A8493C;
-    --shadow: 0 10px 30px -12px rgba(12,89,82,0.25);
+    --ink:#1c2340;
+    --ink-soft:#5b6485;
+    --line:rgba(255,255,255,.75);
+    --glass:rgba(255,255,255,.52);
+    --glass-strong:rgba(255,255,255,.72);
+    --teal:#14b8a6; --indigo:#6366f1; --violet:#a855f7;
+    --spectrum:linear-gradient(115deg,#14b8a6 0%,#6366f1 55%,#a855f7 100%);
+    --danger:#be123c;
+    --shadow:0 20px 50px -22px rgba(76,60,160,.35), 0 2px 0 rgba(255,255,255,.6) inset;
   }
-
-  *{ box-sizing: border-box; }
-
+  *{ box-sizing:border-box; }
   body{
-    margin:0;
-    background: var(--cream);
-    background-image:
-      radial-gradient(circle at 15% 8%, rgba(53,169,154,0.07), transparent 40%),
-      radial-gradient(circle at 90% 90%, rgba(12,89,82,0.06), transparent 45%);
-    color: var(--ink);
-    font-family: 'Vazirmatn', sans-serif;
-    min-height: 100vh;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
-    padding: 40px 18px 24px;
+    margin:0; color:var(--ink);
+    font-family:'Vazirmatn',sans-serif;
+    min-height:100vh;
+    display:flex; flex-direction:column; align-items:center;
+    padding:40px 18px 24px;
   }
 
-  .wrap{ width:100%; max-width: 760px; }
+  /* ---------- Aurora background ---------- */
+  .aurora{ position:fixed; inset:0; z-index:-1; overflow:hidden;
+    background:linear-gradient(140deg,#eaf6f5 0%,#eef0fb 55%,#f3eefb 100%); }
+  .aurora i{ position:absolute; border-radius:50%; filter:blur(90px); opacity:.5;
+    animation:drift 24s ease-in-out infinite alternate; }
+  .aurora i:nth-child(1){ width:48vmax; height:48vmax; background:#2dd4bf; top:-16vmax; right:-12vmax; }
+  .aurora i:nth-child(2){ width:42vmax; height:42vmax; background:#818cf8; top:24vh; left:-16vmax; animation-delay:-8s; }
+  .aurora i:nth-child(3){ width:40vmax; height:40vmax; background:#c084fc; bottom:-16vmax; right:6vmax; animation-delay:-16s; }
+  @keyframes drift{ to{ transform:translate(6vmax,-4vmax) scale(1.12); } }
+  @media (prefers-reduced-motion:reduce){ .aurora i{ animation:none; } }
+
+  .wrap{ width:100%; max-width:760px; }
 
   /* ---------- Header ---------- */
-  header{ text-align:center; margin-bottom: 20px; }
+  header{ text-align:center; margin-bottom:8px; }
   .title{
-    font-size: 40px;
-    font-weight: 800;
-    color: var(--teal-deep);
-    letter-spacing: 0.5px;
-    margin:0;
+    font-size:46px; font-weight:800; margin:0; line-height:1.4;
+    background:var(--spectrum); -webkit-background-clip:text; background-clip:text;
+    -webkit-text-fill-color:transparent; color:transparent;
   }
-  .subtitle{
-    margin: 7px 0 0;
-    color: var(--ink-soft);
-    font-size: 15px;
-    font-weight: 500;
-  }
-  .stitch{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:10px;
-    margin: 16px 0 0;
-    color: var(--teal);
-  }
-  .stitch .dash{
-    flex:1;
-    max-width: 160px;
-    height:0;
-    border-top: 2px dashed var(--cream-line);
-  }
-  .stitch .scissors{
-    font-size: 16px;
-    transform: rotate(90deg);
-    opacity:0.8;
-  }
+  .subtitle{ margin:2px 0 0; color:var(--ink-soft); font-size:15px; font-weight:500; }
+  .stitch{ display:flex; align-items:center; justify-content:center; gap:10px; margin:16px 0 0; }
+  .stitch .dash{ flex:1; max-width:160px; height:0; border-top:2px dashed rgba(99,102,241,.35); }
+  .stitch .scissors{ font-size:16px; transform:rotate(90deg); }
 
-  /* ---------- Card ---------- */
+  /* ---------- Glass card ---------- */
   .card{
-    background: var(--cream-soft);
-    border: 1px solid var(--cream-line);
-    border-radius: 14px;
-    box-shadow: var(--shadow);
-    padding: 26px;
-    margin-top: 22px;
+    background:var(--glass);
+    -webkit-backdrop-filter:blur(24px) saturate(170%); backdrop-filter:blur(24px) saturate(170%);
+    border:1px solid var(--line);
+    border-radius:22px;
+    box-shadow:var(--shadow);
+    padding:26px; margin-top:22px;
   }
 
-  /* Tabs */
   .tabs{
-    display:flex;
-    gap:6px;
-    background: var(--teal-pale);
-    padding:5px;
-    border-radius: 10px;
-    margin-bottom: 22px;
+    display:flex; gap:6px; padding:5px; margin-bottom:22px;
+    background:rgba(255,255,255,.45); border:1px solid var(--line); border-radius:14px;
   }
   .tab-btn{
-    flex:1;
-    border:none;
-    background: transparent;
-    color: var(--teal-deep);
-    font-family: inherit;
-    font-size: 14.5px;
-    font-weight: 600;
-    padding: 9px 10px;
-    border-radius: 8px;
-    cursor:pointer;
-    transition: background .18s ease, color .18s ease;
+    flex:1; border:none; background:transparent; color:var(--ink-soft);
+    font-family:inherit; font-size:14.5px; font-weight:600;
+    padding:9px 10px; border-radius:10px; cursor:pointer;
+    transition:background .2s ease, color .2s ease, box-shadow .2s ease;
   }
-  .tab-btn.active{
-    background: var(--teal-deep);
-    color: #fff;
+  .tab-btn.active{ background:var(--spectrum); color:#fff; box-shadow:0 8px 18px -8px rgba(99,102,241,.7); }
+
+  label{ display:block; font-size:13.5px; font-weight:600; color:var(--ink-soft); margin-bottom:8px; }
+
+  textarea,input[type=number],select{
+    width:100%; font-family:inherit; font-size:15px; color:var(--ink);
+    background:var(--glass-strong); border:1px solid var(--line);
+    box-shadow:0 1px 0 rgba(255,255,255,.7) inset, 0 4px 14px -10px rgba(76,60,160,.4);
+    border-radius:14px; outline:none;
+    transition:border-color .15s ease, box-shadow .15s ease;
+  }
+  textarea{ min-height:160px; resize:vertical; line-height:1.9; padding:14px 16px; }
+  input[type=number]{ padding:11px 14px; direction:ltr; text-align:right; }
+  select{ padding:11px 14px; cursor:pointer; direction:rtl; text-align:right; }
+  select option{ direction:rtl; text-align:right; }
+  textarea:focus,input[type=number]:focus,select:focus{
+    border-color:var(--indigo); box-shadow:0 0 0 3px rgba(99,102,241,.2);
   }
 
-  label{
-    display:block;
-    font-size: 13.5px;
-    font-weight: 600;
-    color: var(--ink-soft);
-    margin-bottom: 8px;
-  }
+  .counter-row{ display:flex; justify-content:flex-end; margin-top:8px; font-size:13px; color:var(--ink-soft); }
+  .counter-row b{ color:var(--indigo); font-weight:700; margin-right:4px; }
 
-  textarea{
-    width:100%;
-    min-height: 160px;
-    resize: vertical;
-    font-family: inherit;
-    font-size: 15px;
-    line-height: 1.9;
-    color: var(--ink);
-    background: #fff;
-    border: 1px solid var(--cream-line);
-    border-radius: 10px;
-    padding: 14px 16px;
-    outline: none;
-    transition: border-color .15s ease, box-shadow .15s ease;
-  }
-  textarea:focus{
-    border-color: var(--teal-bright);
-    box-shadow: 0 0 0 3px rgba(53,169,154,0.15);
-  }
-
-  .counter-row{
-    display:flex;
-    justify-content: flex-end;
-    margin-top: 8px;
-    font-size: 13px;
-    color: var(--ink-soft);
-  }
-  .counter-row b{ color: var(--teal-deep); font-weight: 700; }
-
-  .settings-row{
-    display:flex;
-    gap: 12px;
-    margin-top: 22px;
-  }
-  .settings-row > div{ flex: 1 1 0; min-width: 0; }
-
-  input[type=number]{
-    width:100%;
-    font-family: inherit;
-    font-size: 15px;
-    background:#fff;
-    border: 1px solid var(--cream-line);
-    border-radius: 10px;
-    padding: 11px 14px;
-    outline:none;
-    direction: ltr;
-    text-align: right;
-    color: var(--ink);
-  }
-  input[type=number]:focus{
-    border-color: var(--teal-bright);
-    box-shadow: 0 0 0 3px rgba(53,169,154,0.15);
-  }
-
-  select{
-    width:100%;
-    font-family: inherit;
-    font-size: 15px;
-    background:#fff;
-    border: 1px solid var(--cream-line);
-    border-radius: 10px;
-    padding: 11px 14px;
-    outline:none;
-    color: var(--ink);
-    cursor:pointer;
-    direction: rtl;
-    text-align: right;
-  }
-  select option{
-    direction: rtl;
-    text-align: right;
-  }
-  select:focus{
-    border-color: var(--teal-bright);
-    box-shadow: 0 0 0 3px rgba(53,169,154,0.15);
-  }
+  .settings-row{ display:flex; gap:12px; margin-top:22px; }
+  .settings-row > div{ flex:1 1 0; min-width:0; }
 
   .primary-btn{
-    margin-top: 22px;
-    width:100%;
-    background: var(--teal-deep);
-    color:#fff;
-    border:none;
-    font-family: inherit;
-    font-size: 15.5px;
-    font-weight: 700;
-    padding: 13px;
-    border-radius: 10px;
-    cursor:pointer;
-    transition: background .15s ease, transform .1s ease;
+    margin-top:22px; width:100%; color:#fff; border:none;
+    background:var(--spectrum); background-size:160% 100%; background-position:100% 0;
+    font-family:inherit; font-size:15.5px; font-weight:700; padding:13px; border-radius:14px; cursor:pointer;
+    box-shadow:0 14px 26px -14px rgba(99,102,241,.8);
+    transition:background-position .4s ease, transform .1s ease;
   }
-  .primary-btn:hover{ background: var(--teal); }
-  .primary-btn:active{ transform: scale(0.99); }
+  .primary-btn:hover{ background-position:0 0; }
+  .primary-btn:active{ transform:scale(.99); }
+  .tab-btn:focus-visible,.primary-btn:focus-visible{ outline:3px solid rgba(99,102,241,.45); outline-offset:2px; }
 
   .error-box{
-    margin-top: 16px;
-    background: #FBEAE7;
-    border: 1px solid #E7B9B0;
-    color: var(--danger);
-    font-size: 13.5px;
-    font-weight: 600;
-    padding: 12px 14px;
-    border-radius: 10px;
+    margin-top:16px; background:rgba(244,63,94,.12); border:1px solid rgba(244,63,94,.35);
+    color:var(--danger); font-size:13.5px; font-weight:600; padding:12px 14px; border-radius:14px;
   }
 
-  /* ---------- Results (auto) ---------- */
-  .results{ margin-top: 22px; display:flex; flex-direction:column; gap:12px; }
+  /* ---------- Result cards ---------- */
+  .results{ margin-top:22px; display:flex; flex-direction:column; gap:12px; }
   .seg-card{
-    position:relative;
-    background:#fff;
-    border: 1px solid var(--cream-line);
-    border-radius: 10px;
-    padding: 14px 16px 14px 16px;
-    cursor:pointer;
-    transition: border-color .15s ease, box-shadow .15s ease;
-    font-size: 14.5px;
-    line-height: 1.9;
+    position:relative; cursor:pointer;
+    background:var(--glass-strong); border:1px solid var(--line); border-radius:16px;
+    padding:14px 16px 26px; font-size:14.5px; line-height:1.9;
+    box-shadow:0 8px 20px -16px rgba(76,60,160,.5);
+    transition:border-color .15s ease, box-shadow .15s ease, background .15s ease;
   }
-  .seg-card:hover{
-    border-color: var(--teal-bright);
-    box-shadow: 0 4px 14px -6px rgba(12,89,82,0.25);
-  }
-  .seg-head{
-    display:flex;
-    justify-content: space-between;
-    align-items:center;
-    margin-bottom: 6px;
-  }
+  .seg-card:hover{ border-color:var(--indigo); box-shadow:0 10px 24px -12px rgba(99,102,241,.45); }
+  .seg-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
   .seg-num{
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--teal-deep);
-    background: var(--teal-pale);
-    padding: 2px 10px;
-    border-radius: 20px;
+    font-size:12px; font-weight:700; color:#fff; background:var(--spectrum);
+    padding:2px 12px; border-radius:20px;
   }
-  .seg-len{ font-size: 11.5px; color: var(--ink-soft); }
-  .seg-text{ color: var(--ink); white-space: pre-wrap; word-break: break-word; }
-  .copy-hint{
-    position:absolute;
-    left: 14px;
-    bottom: 10px;
-    font-size: 11px;
-    color: var(--teal-bright);
-    opacity: 0;
-    transition: opacity .15s ease;
-  }
-  .seg-card:hover .copy-hint{ opacity: 1; }
-  .seg-card.copied{ border-color: var(--teal-bright); background: var(--teal-pale); }
+  .seg-len{ font-size:11.5px; color:var(--ink-soft); }
+  .seg-card.too-long{ border-color:rgba(244,63,94,.55); }
+  .seg-card.too-long .seg-len{ color:var(--danger); font-weight:700; }
+  .seg-text{ white-space:pre-wrap; word-break:break-word; }
+  .copy-hint{ position:absolute; left:14px; bottom:8px; font-size:11px; color:var(--indigo); opacity:.55; transition:opacity .15s ease; }
+  .seg-card:hover .copy-hint{ opacity:1; }
+  .seg-card.copied{ border-color:var(--teal); background:rgba(45,212,191,.2); }
 
   /* ---------- Manual mode ---------- */
   .manual-hint{
-    font-size: 13px;
-    color: var(--ink-soft);
-    margin-bottom: 14px;
-    background: var(--teal-pale);
-    border: 1px dashed var(--teal-bright);
-    padding: 10px 14px;
-    border-radius: 10px;
+    font-size:13px; color:var(--ink-soft); margin-bottom:14px; padding:10px 14px;
+    background:rgba(99,102,241,.08); border:1px dashed rgba(99,102,241,.45); border-radius:14px;
   }
   .manual-box{
-    background:#fff;
-    border: 1px solid var(--cream-line);
-    border-radius: 10px;
-    padding: 18px 16px;
-    font-size: 15px;
-    line-height: 2.4;
-    word-break: break-word;
+    background:var(--glass-strong); border:1px solid var(--line); border-radius:16px;
+    padding:20px 16px; font-size:15px; line-height:2.5; word-break:break-word;
   }
-  .word{
-    padding: 2px 1px;
-    border-radius: 4px;
-  }
-  .word.over{
-    background: #F3D9D5;
-    border-radius: 0;
-  }
+  .manual-box .placeholder{ color:var(--ink-soft); font-size:14px; }
+
+  /* All inline pieces share the same font and have NO vertical padding, so every
+     highlight is exactly one content-area tall. */
+  .word{ padding:0; background:none; }
   .gap{
-    display:inline;
-    white-space: pre-wrap;
-    cursor:pointer;
-    position:relative;
-    padding: 1px 2px;
-    border-radius: 3px;
-    transition: background .12s ease;
+    display:inline; white-space:pre-wrap; cursor:pointer; position:relative;
+    padding:0 2px; margin:0 -2px; background:none; border-radius:0;
   }
-  .gap:hover{ background: var(--teal-pale); }
-  .gap:hover::after{
-    content:"✂";
-    position:absolute;
-    top:-15px;
-    right:-2px;
-    font-size:11px;
-    color: var(--teal);
-  }
-  .gap.cut{
-    background: var(--teal-pale);
-    box-shadow: inset 0 -2px 0 var(--teal-deep);
-  }
-  .gap.cut::before{
-    content: "✂";
-    position:absolute;
-    top: -15px;
-    right: -2px;
-    font-size: 11px;
-    color: var(--teal-deep);
-  }
-  .gap.boundary{
-    box-shadow: inset 0 -2px 0 var(--danger);
-  }
-  .gap.boundary::after{
-    content: "⏸";
-    position:absolute;
-    top:-15px;
-    right:-2px;
-    font-size:10px;
-    color: var(--danger);
-    opacity: 0.85;
-  }
-  .gap.over{
-    background: #F3D9D5;
-    border-radius: 0;
+  .gap:hover{ background:rgba(99,102,241,.2); }
+  .gap:hover::after{ content:"✂"; position:absolute; top:-1.15em; right:0; font-size:11px; color:var(--indigo); line-height:1; }
+  .gap.cut{ background:rgba(99,102,241,.16); box-shadow:inset 0 -2px 0 var(--indigo); }
+  .gap.cut::before{ content:"✂"; position:absolute; top:-1.15em; right:0; font-size:11px; color:var(--indigo); line-height:1; }
+  .gap.cut:hover::after{ content:none; }
+
+  /* One wrapper element holds the entire out-of-limit part of a segment,
+     so the highlight is a single continuous band. */
+  .over-zone{
+    background:rgba(244,63,94,.22);
+    -webkit-box-decoration-break:clone; box-decoration-break:clone;
+    border-radius:0;
   }
 
   /* ---------- Footer ---------- */
-  footer{
-    margin-top: 34px;
-    text-align:center;
-    font-size: 13px;
-    color: var(--ink-soft);
-    padding-bottom: 10px;
-  }
-  footer a{
-    color: var(--teal-deep);
-    font-weight: 700;
-    text-decoration: none;
-    border-bottom: 1px dashed var(--teal-bright);
-  }
-  footer a:hover{ color: var(--teal-bright); }
-  .version{ margin-top: 4px; font-size: 12px; color: #8B9490; }
+  footer{ margin-top:34px; text-align:center; font-size:13px; color:var(--ink-soft); padding-bottom:10px; }
+  footer a{ color:var(--indigo); font-weight:700; text-decoration:none; border-bottom:1px dashed var(--violet); }
+  footer a:hover{ color:var(--violet); }
+  .version{ margin-top:4px; font-size:12px; color:#8a92ae; }
 
-  @media (max-width: 480px){
-    .title{ font-size: 31px; }
-    .card{ padding: 18px; }
-    .settings-row{ gap: 8px; }
-    input[type=number], select{ padding: 11px 8px; font-size: 13.5px; }
+  @media (max-width:480px){
+    .title{ font-size:36px; }
+    .card{ padding:18px; border-radius:20px; }
+    .settings-row{ gap:8px; }
+    input[type=number],select{ padding:11px 8px; font-size:13.5px; }
   }
 </style>
 </head>
 <body>
+
+<div class="aurora"><i></i><i></i><i></i></div>
 
 <div class="wrap">
   <header>
@@ -387,7 +202,7 @@
 
     <label for="mainText">متن خود را وارد کنید</label>
     <textarea id="mainText" placeholder="متن طولانی خود را اینجا بنویسید یا بچسبانید..."></textarea>
-    <div class="counter-row">تعداد کاراکتر: <b id="charCount" style="margin-right:4px;">۰</b></div>
+    <div class="counter-row">تعداد کاراکتر: <b id="charCount">۰</b></div>
 
     <div class="settings-row">
       <div>
@@ -417,7 +232,7 @@
 
     <div id="manualSection" style="display:none;">
       <div class="manual-hint">
-        روی فاصله‌ی بین کلمات کلیک کنید تا آن نقطه را به عنوان محل برش انتخاب کنید. خط قرمزِ نقطه‌چین محلی را نشان می‌دهد که از آنجا به بعد، آن بخش از محدودیت کاراکتر (با احتساب افزوده) عبور می‌کند.
+        روی فاصله‌ی بین کلمات کلیک کنید تا آن نقطه به عنوان محل برش انتخاب شود. بخشِ قرمزرنگ، قسمتی از متن است که (با احتساب پایان‌بندی) از محدودیت کاراکتر عبور کرده است.
       </div>
       <div class="manual-box" id="manualBox"></div>
       <div id="manualError"></div>
@@ -427,7 +242,7 @@
 
   <footer>
     طراحی شده توسط: <a href="https://x.com/pushideh" target="_blank" rel="noopener">پوشیده</a>
-    <div class="version">نسخه‌ی برنامه: ۱.۷</div>
+    <div class="version">نسخه‌ی برنامه: ۲.۰</div>
   </footer>
 </div>
 
@@ -438,6 +253,20 @@ function toPersianDigits(input) {
   return String(input).replace(/[0-9]/g, d => map[d]);
 }
 function countChars(str){ return Array.from(str).length; }
+
+// Splits a string into grapheme clusters, so a base letter and its combining marks
+// (kasra «ِ», fatha, shadda, ZWNJ, variation selectors...) are never separated.
+const graphemeSegmenter = (typeof Intl !== 'undefined' && Intl.Segmenter)
+  ? new Intl.Segmenter('fa', { granularity: 'grapheme' }) : null;
+function splitGraphemes(str){
+  if (graphemeSegmenter) return Array.from(graphemeSegmenter.segment(str), s => s.segment);
+  const out = [];
+  for (const ch of Array.from(str)) {
+    if (out.length && /[\p{M}\u200C\u200D\uFE0E\uFE0F]/u.test(ch)) out[out.length - 1] += ch;
+    else out.push(ch);
+  }
+  return out;
+}
 
 const ENDING_CONFIG = {
   none:            { build: (a,b) => '', pos: (a,b) => 'suffix' },
@@ -468,16 +297,12 @@ function getEndingPosition(type, a, b){
   return cfg ? cfg.pos(a, b) : 'suffix';
 }
 function getEndingLength(type, a, b){ return countChars(buildEnding(type,a,b)); }
-// Budget reserved from the limit: the ending itself PLUS the joining space (since ending is
-// attached as "text ending" or "ending text", the space also counts toward the character limit).
+// Budget reserved from the limit: the ending itself PLUS the joining space.
 function getEndingBudget(type, a, b){
   const len = getEndingLength(type, a, b);
   return len > 0 ? len + 1 : 0;
 }
-// Used only while auto-splitting hasn't finalized the real segment numbers yet. For the emoji
-// types the LAST segment normally gets no ending (except the special two-segment case, whose
-// "up" emoji is the same length as the regular "down" emoji), so the conservative (worst-case)
-// budget is based on a non-last segment whenever more than one segment is expected.
+// Used while auto-splitting hasn't finalized the real segment numbers yet (worst case).
 function getConvergenceBudget(type, guessTotal){
   if (type === 'emoji1' || type === 'emoji2' || type === 'arrow_down') {
     const refB = guessTotal > 1 ? 1 : guessTotal;
@@ -485,20 +310,15 @@ function getConvergenceBudget(type, guessTotal){
   }
   return getEndingBudget(type, guessTotal, guessTotal);
 }
-// In manual mode, every segment except the still-open trailing one already has a cut placed
-// right after it, so its ending is fixed and known for sure. The trailing/open segment (from the
-// last cut to the end of the text) is ambiguous: the user might add another cut after it later,
-// which would turn it from "last" (often no ending) into "not last" (needs an ending). Previewing
-// it with e=0 would under-reserve space and let the user cut right at the limit, only to have the
-// ending push it over once the cut is actually placed. So the open segment is always previewed
+// Manual mode: closed segments have a known ending; the trailing open segment is previewed
 // conservatively, as if it will end up needing an ending.
 function getPreviewEndingBudget(type, totalSegs, segNumber, isTrailingOpen){
   if (!isTrailingOpen) return getEndingBudget(type, totalSegs, segNumber);
   if (type === 'emoji1' || type === 'emoji2' || type === 'arrow_down') {
-    return getEndingBudget(type, Math.max(totalSegs, 2), 1); // force the "not last" variant
+    return getEndingBudget(type, Math.max(totalSegs, 2), 1);
   }
   if (type === 'none') return 0;
-  return getEndingBudget(type, totalSegs + 2, segNumber); // extra digit-width buffer, worst case
+  return getEndingBudget(type, totalSegs + 2, segNumber);
 }
 function combineSegment(segText, ending, type, a, b){
   if (!ending) return segText;
@@ -506,8 +326,7 @@ function combineSegment(segText, ending, type, a, b){
 }
 
 function tokenizeWords(text) {
-  // Splits text into words plus the exact separator (spaces, tabs, newlines...) that followed each
-  // word, so line breaks inside the original text are never lost during splitting.
+  // Words plus the exact separator (spaces, tabs, newlines...) after each word.
   const trimmed = text.replace(/^\s+/, '').replace(/\s+$/, '');
   const words = [];
   const seps = [];
@@ -526,8 +345,16 @@ function greedySplit(words, seps, limit) {
   let current = '';
   function pushLong(w){
     while (countChars(w) > limit) {
-      segments.push(Array.from(w).slice(0, limit).join(''));
-      w = Array.from(w).slice(limit).join('');
+      const gs = splitGraphemes(w);
+      let n = 0, k = 0;
+      while (k < gs.length) {
+        const c = countChars(gs[k]);
+        if (n + c > limit) break;
+        n += c; k++;
+      }
+      if (k === 0) k = 1;
+      segments.push(gs.slice(0, k).join(''));
+      w = gs.slice(k).join('');
     }
     return w;
   }
@@ -578,11 +405,15 @@ const mainText = document.getElementById('mainText');
 const charCount = document.getElementById('charCount');
 const limitInput = document.getElementById('limitInput');
 const endingSelect = document.getElementById('endingSelect');
+const manualCuts = new Set(); // cut positions as character offsets (end of the word before the cut)
+let lastText = mainText.value;
 
 function updateCharCount(){
   charCount.textContent = toPersianDigits(countChars(mainText.value));
 }
 mainText.addEventListener('input', () => {
+  remapCuts(lastText, mainText.value);
+  lastText = mainText.value;
   updateCharCount();
   if (currentTab === 'manual') renderManual();
 });
@@ -605,6 +436,23 @@ function switchTab(tab){
   if (tab === 'manual') renderManual();
 }
 
+function errorHtml(msg){ return '<div class="error-box">' + msg + '</div>'; }
+
+function makeCard(seg, idx, total, limit){
+  const card = document.createElement('div');
+  card.className = 'seg-card' + (seg.length > limit ? ' too-long' : '');
+  card.innerHTML =
+    '<div class="seg-head">' +
+      '<span class="seg-num">بخش ' + toPersianDigits(idx+1) + ' از ' + toPersianDigits(total) + '</span>' +
+      '<span class="seg-len">' + toPersianDigits(seg.length) + ' کاراکتر' + (seg.length > limit ? ' (بیش از حد مجاز)' : '') + '</span>' +
+    '</div>' +
+    '<div class="seg-text"></div>' +
+    '<div class="copy-hint">برای کپی کلیک کنید</div>';
+  card.querySelector('.seg-text').textContent = seg.full;
+  card.addEventListener('click', () => copyToClipboard(seg.full, card));
+  return card;
+}
+
 /* ---------------- Auto mode ---------------- */
 function runAutoSplit(){
   const text = mainText.value;
@@ -616,56 +464,71 @@ function runAutoSplit(){
   resultsBox.innerHTML = '';
 
   if (!limit || limit < 1){
-    errBox.innerHTML = '<div class="error-box">لطفاً یک عدد معتبر برای محدودیت کاراکتر وارد کنید.</div>';
+    errBox.innerHTML = errorHtml('لطفاً یک عدد معتبر برای محدودیت کاراکتر وارد کنید.');
     return;
   }
   const result = computeSegments(text, limit, endingType);
   if (result.error){
-    errBox.innerHTML = '<div class="error-box">' + result.error + '</div>';
+    errBox.innerHTML = errorHtml(result.error);
     return;
   }
-  result.segments.forEach((seg, idx) => {
-    const card = document.createElement('div');
-    card.className = 'seg-card';
-    card.innerHTML =
-      '<div class="seg-head">' +
-        '<span class="seg-num">بخش ' + toPersianDigits(idx+1) + ' از ' + toPersianDigits(result.total) + '</span>' +
-        '<span class="seg-len">' + toPersianDigits(seg.length) + ' کاراکتر</span>' +
-      '</div>' +
-      '<div class="seg-text"></div>' +
-      '<div class="copy-hint">برای کپی کلیک کنید</div>';
-    card.querySelector('.seg-text').textContent = seg.full;
-    card.addEventListener('click', () => copyToClipboard(seg.full, card));
-    resultsBox.appendChild(card);
-  });
+  result.segments.forEach((seg, idx) => resultsBox.appendChild(makeCard(seg, idx, result.total, limit)));
 }
 
 function copyToClipboard(text, card){
+  const hint = card.querySelector('.copy-hint');
+  const old = hint.textContent;
   const done = () => {
     card.classList.add('copied');
-    const hint = card.querySelector('.copy-hint');
-    const old = hint.textContent;
     hint.textContent = 'کپی شد ✓';
     hint.style.opacity = 1;
-    setTimeout(() => { card.classList.remove('copied'); hint.textContent = old; }, 1200);
+    setTimeout(() => {
+      card.classList.remove('copied');
+      hint.textContent = old;
+      hint.style.opacity = '';
+    }, 1400);
   };
-  if (navigator.clipboard && navigator.clipboard.writeText){
-    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  const fallback = () => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:fixed;opacity:0;';
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand('copy'); done(); } catch (e) {}
+    document.body.removeChild(ta);
+  };
+  if (navigator.clipboard && window.isSecureContext) {
+    navigator.clipboard.writeText(text).then(done).catch(fallback);
   } else {
-    fallbackCopy(text, done);
+    fallback();
   }
-}
-function fallbackCopy(text, done){
-  const ta = document.createElement('textarea');
-  ta.value = text;
-  document.body.appendChild(ta);
-  ta.select();
-  try { document.execCommand('copy'); done(); } catch(e){}
-  document.body.removeChild(ta);
 }
 
 /* ---------------- Manual mode ---------------- */
-let manualCuts = new Set(); // set of word-indices after which a cut happens
+// Cuts are stored as character offsets, not word indexes, so after editing the text they are
+// shifted to follow the words they belong to. A cut is dropped only if its spot was edited away.
+function remapCuts(oldText, newText){
+  if (!manualCuts.size) return;
+  const oldLen = oldText.length, newLen = newText.length;
+  const maxP = Math.min(oldLen, newLen);
+  let p = 0;
+  while (p < maxP && oldText[p] === newText[p]) p++;
+  let s = 0;
+  while (s < maxP - p && oldText[oldLen - 1 - s] === newText[newLen - 1 - s]) s++;
+  const delta = newLen - oldLen;
+  const inserted = newText.slice(p, newLen - s);
+  const next = new Set();
+  manualCuts.forEach(o => {
+    if (o < p) next.add(o);
+    else if (o >= oldLen - s) {
+      if (o === p && /\s/.test(inserted)) next.add(o);   // whitespace typed right after the word
+      else next.add(o + delta);                           // after (or at the end of) the edit
+    }
+    else if (o === p) next.add(o);
+  });
+  manualCuts.clear();
+  next.forEach(o => manualCuts.add(o));
+}
 
 function renderManual(){
   const text = mainText.value;
@@ -674,116 +537,102 @@ function renderManual(){
   const box = document.getElementById('manualBox');
   const errBox = document.getElementById('manualError');
   const resultsBox = document.getElementById('manualResults');
-  box.innerHTML = '';
-  errBox.innerHTML = '';
-  resultsBox.innerHTML = '';
+  box.innerHTML = ''; errBox.innerHTML = ''; resultsBox.innerHTML = '';
 
   const { words, seps } = tokenizeWords(text);
-  if (words.length === 0){
-    box.innerHTML = '<span style="color:var(--ink-soft)">متنی برای نمایش وجود ندارد.</span>';
+  if (!words.length){
+    box.innerHTML = '<span class="placeholder">متنی برای نمایش وجود ندارد.</span>';
     return;
   }
-  if (!limit || limit < 1){
-    errBox.innerHTML = '<div class="error-box">لطفاً یک عدد معتبر برای محدودیت کاراکتر وارد کنید.</div>';
-  }
+  if (!limit || limit < 1) errBox.innerHTML = errorHtml('لطفاً یک عدد معتبر برای محدودیت کاراکتر وارد کنید.');
 
-  // clean invalid cuts (out of range)
-  manualCuts.forEach(c => { if (c < 0 || c >= words.length - 1) manualCuts.delete(c); });
+  // offset of the end of every word in the textarea, to map stored cuts back to word indexes
+  const ends = [];
+  let pos = text.length - text.replace(/^\s+/, '').length;
+  words.forEach((w, i) => { pos += w.length; ends.push(pos); if (i < seps.length) pos += seps[i].length; });
+  const cutSet = new Set();
+  ends.forEach((o, i) => { if (i < words.length - 1 && manualCuts.has(o)) cutSet.add(i); });
+  manualCuts.clear();
+  cutSet.forEach(i => manualCuts.add(ends[i]));
 
-  // build segment boundaries from cuts
-  const cutList = Array.from(manualCuts).sort((a,b) => a-b);
+  const cutList = Array.from(cutSet).sort((a,b) => a-b);
   const segStarts = [0, ...cutList.map(c => c+1)];
   const segEnds = [...cutList.map(c => c+1), words.length];
   const totalSegs = segStarts.length;
 
-  // compute, for each segment, the boundary word-index (relative, global) where limit would be exceeded
-  const boundaryAt = new Set(); // global word index i means: gap BEFORE word i is a boundary
-  const overWords = new Set();
-
-  segStarts.forEach((start, segIdx) => {
+  // Effective limit of each segment (limit minus the ending that will be attached to it).
+  const effs = segStarts.map((start, segIdx) => {
+    if (!limit) return Infinity;
     const end = segEnds[segIdx];
     const segNumber = segIdx + 1;
-    const isTrailingOpen = (segIdx === segStarts.length - 1);
-    let e = 0;
-    if (limit) {
-      if (isTrailingOpen) {
-        // Only reserve room for a possible future ending if this open segment's raw text (with
-        // no ending at all) already exceeds the limit — i.e. a split is actually necessary. If
-        // it already fits as-is, there's no reason to assume it will ever need an ending.
-        let rawLen = countChars(words[start]);
-        for (let i = start + 1; i < end; i++) rawLen += countChars(seps[i-1]) + countChars(words[i]);
-        e = (rawLen > limit) ? getPreviewEndingBudget(endingType, totalSegs, segNumber, true) : 0;
-      } else {
-        e = getEndingBudget(endingType, totalSegs, segNumber);
-      }
+    let e;
+    if (segIdx === totalSegs - 1) {
+      // Open trailing segment: reserve room for a possible future ending only if its raw text
+      // already exceeds the limit.
+      let rawLen = countChars(words[start]);
+      for (let i = start + 1; i < end; i++) rawLen += countChars(seps[i-1]) + countChars(words[i]);
+      e = (rawLen > limit) ? getPreviewEndingBudget(endingType, totalSegs, segNumber, true) : 0;
+    } else {
+      e = getEndingBudget(endingType, totalSegs, segNumber);
     }
-    const effLimit = limit - e;
-    let current = '';
-    let marked = false;
-    for (let i = start; i < end; i++){
-      const sep = i > start ? seps[i-1] : '';
-      const candidate = current ? current + sep + words[i] : words[i];
-      if (limit && countChars(candidate) > effLimit){
-        if (!marked){ boundaryAt.add(i); marked = true; }
-        overWords.add(i);
-      } else {
-        current = candidate;
-      }
-    }
+    return limit - e;
   });
 
-  // render words + gaps (gaps keep the ORIGINAL separator text so newlines/multi-spaces are preserved)
-  words.forEach((w, i) => {
-    const wordSpan = document.createElement('span');
-    wordSpan.className = 'word' + (overWords.has(i) ? ' over' : '');
-    wordSpan.textContent = w;
-    box.appendChild(wordSpan);
+  let seg = 0, used = 0, over = false, zone = null;
 
-    if (i < words.length - 1){
-      const gap = document.createElement('span');
-      const isCut = manualCuts.has(i);
-      const isOverGap = overWords.has(i) || overWords.has(i+1);
-      gap.className = 'gap'
-        + (isCut ? ' cut' : '')
-        + (boundaryAt.has(i+1) && !isCut ? ' boundary' : '')
-        + (isOverGap && !isCut ? ' over' : '');
-      gap.textContent = seps[i];
-      gap.addEventListener('click', () => {
-        if (manualCuts.has(i)) manualCuts.delete(i); else manualCuts.add(i);
+  function makeSpan(text, cls, idx){
+    const el = document.createElement('span');
+    el.className = cls;
+    el.textContent = text;
+    if (cls.indexOf('gap') === 0){
+      el.addEventListener('click', () => {
+        const o = ends[idx];
+        if (manualCuts.has(o)) manualCuts.delete(o); else manualCuts.add(o);
         renderManual();
       });
-      box.appendChild(gap);
+    }
+    return el;
+  }
+
+  // Splits a piece of text exactly at the limit, even in the middle of a word. The split always
+  // falls on a grapheme boundary, so a kasra (or any mark) stays attached to its letter. Everything
+  // after the limit goes into ONE wrapper: a single continuous red band of uniform height.
+  function emit(text, cls, idx){
+    let inPart = '', overPart = '';
+    for (const g of splitGraphemes(text)){
+      const c = countChars(g);
+      if (!over && used + c > effs[seg]) over = true;
+      if (over) overPart += g; else { inPart += g; used += c; }
+    }
+    if (inPart) box.appendChild(makeSpan(inPart, cls, idx));
+    if (overPart){
+      if (!zone){ zone = document.createElement('span'); zone.className = 'over-zone'; box.appendChild(zone); }
+      zone.appendChild(makeSpan(overPart, cls, idx));
+    }
+  }
+
+  words.forEach((w, i) => {
+    emit(w, 'word', i);
+    if (i < words.length - 1){
+      if (cutSet.has(i)){
+        zone = null;
+        box.appendChild(makeSpan(seps[i], 'gap cut', i));
+        seg++; used = 0; over = false;
+      } else {
+        emit(seps[i], 'gap', i);
+      }
     }
   });
 
-  // build final segments list (segments keep original spacing/newlines; boundary whitespace at a cut is dropped)
   const finalSegs = segStarts.map((start, idx) => {
     const end = segEnds[idx];
     let segText = words[start];
-    for (let i = start + 1; i < end; i++){
-      segText += seps[i-1] + words[i];
-    }
+    for (let i = start + 1; i < end; i++) segText += seps[i-1] + words[i];
     const ending = limit ? buildEnding(endingType, totalSegs, idx+1) : '';
     const full = combineSegment(segText, ending, endingType, totalSegs, idx+1);
     return { text: segText, full, length: countChars(full) };
   });
-
-  finalSegs.forEach((seg, idx) => {
-    const card = document.createElement('div');
-    const isOver = limit && seg.length > limit;
-    card.className = 'seg-card';
-    if (isOver) card.style.borderColor = 'var(--danger)';
-    card.innerHTML =
-      '<div class="seg-head">' +
-        '<span class="seg-num">بخش ' + toPersianDigits(idx+1) + ' از ' + toPersianDigits(totalSegs) + '</span>' +
-        '<span class="seg-len" style="' + (isOver ? 'color:var(--danger);font-weight:700;' : '') + '">' + toPersianDigits(seg.length) + ' کاراکتر' + (isOver ? ' (بیش از حد مجاز)' : '') + '</span>' +
-      '</div>' +
-      '<div class="seg-text"></div>' +
-      '<div class="copy-hint">برای کپی کلیک کنید</div>';
-    card.querySelector('.seg-text').textContent = seg.full;
-    card.addEventListener('click', () => copyToClipboard(seg.full, card));
-    resultsBox.appendChild(card);
-  });
+  finalSegs.forEach((seg, idx) => resultsBox.appendChild(makeCard(seg, idx, totalSegs, limit)));
 }
 </script>
 </body>
